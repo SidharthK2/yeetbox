@@ -61,7 +61,7 @@ function App() {
     }
   }
 
-  const downloadUrl = result ? `${API_URL}/file/${result.shareableLink}` : ''
+  const downloadUrl = result ? `${window.location.origin}/download/${result.shareableLink}` : ''
 
   return (
     <div className="min-h-screen bg-background">
