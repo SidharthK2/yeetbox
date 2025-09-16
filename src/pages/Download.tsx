@@ -9,46 +9,20 @@ const Download = () => {
   const [downloading, setDownloading] = useState(true);
 
   useEffect(() => {
-    const downloadFile = async () => {
-      if (!shareableLink) {
-        setError('Invalid download link');
-        setDownloading(false);
-        return;
-      }
+    if (!shareableLink) {
+      setError('Invalid download link');
+      setDownloading(false);
+      return;
+    }
 
-      try {
-        const response = await fetch(`${API_URL}/file/${shareableLink}`);
-        
-        if (!response.ok) {
-          throw new Error(`File not found or expired`);
-        }
-
-        // Get the filename from the response headers or use a default
-        const contentDisposition = response.headers.get('Content-Disposition');
-        const filename = contentDisposition 
-          ? contentDisposition.split('filename=')[1]?.replace(/"/g, '') 
-          : 'download';
-
-        // Create blob and download
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        
-        setDownloading(false);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Download failed';
-        setError(message);
-        setDownloading(false);
-      }
-    };
-
-    downloadFile();
+    // Since your backend sets Content-Disposition: attachment, 
+    // we can simply redirect to trigger the download
+    window.location.href = `${API_URL}/file/${shareableLink}`;
+    
+    // Give a moment for the download to start, then show success
+    setTimeout(() => {
+      setDownloading(false);
+    }, 2000);
   }, [shareableLink]);
 
   if (downloading) {
