@@ -9,7 +9,7 @@ createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} />
-      <Route path="/download/:shareableLink" element={<Download />} />
+      <Route path="/:shareableLink" element={<Download />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>
