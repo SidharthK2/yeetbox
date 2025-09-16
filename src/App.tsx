@@ -14,15 +14,6 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState<boolean>(false)
 
-  useEffect(() => {
-    const path = window.location.pathname
-    if (path !== '/') {
-      // This is a download link, redirect to backend
-      const link = path.substring(1)
-      window.location.href = `${API_URL}/file/${link}`
-    }
-  }, [])
-
   const handleUpload = async (): Promise<void> => {
     if (!file) return
     
