@@ -14,25 +14,35 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState<boolean>(false)
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null)
+      }, 5000) // Clear error after 5 seconds
+      return () => clearTimeout(timer)
+    }
+  }, [error])
+
   const handleUpload = async (): Promise<void> => {
     if (!file) return
-    
+
     setUploading(true)
     setError(null)
-    
+    setResult(null)
+
     const formData = new FormData()
     formData.append('file', file)
-    
+
     try {
       const response = await fetch(`${API_URL}/file/upload`, {
         method: 'POST',
         body: formData,
       })
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
-      
+
       const data: UploadResponse = await response.json()
       setResult(data)
       if (import.meta.env.DEV) {
@@ -96,13 +106,13 @@ function App() {
               Choose file
             </label>
             <div className="relative">
-              <input 
-                type="file" 
+              <input
+                type="file"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
                 className="w-full text-sm text-muted-foreground file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-secondary file:text-secondary-foreground hover:file:bg-muted file:cursor-pointer file:transition-colors bg-input border border-border rounded-lg p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
               />
             </div>
-            
+
             {file && (
               <div className="mt-4 p-4 bg-surface border border-border rounded-lg animate-slide-up">
                 <div className="flex items-center">
@@ -119,10 +129,11 @@ function App() {
               </div>
             )}
           </div>
-          
+
           {/* Upload Button */}
-          <button 
-            onClick={handleUpload} 
+          <button
+            onClick={handleUpload}
+            type='submit'
             disabled={!file || uploading}
             className="w-full py-4 px-6 bg-primary hover:bg-primary-hover disabled:bg-muted text-primary-foreground disabled:text-muted-foreground font-semibold rounded-xl transition-all duration-200 disabled:cursor-not-allowed shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 disabled:shadow-none transform hover:scale-[1.02] active:scale-[0.98] disabled:scale-100"
           >
@@ -171,7 +182,7 @@ function App() {
                 <p className="text-muted-foreground">Your file is ready to share</p>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               {/* Download Link */}
               <div>
@@ -184,6 +195,7 @@ function App() {
                   </div>
                   <button
                     onClick={() => copyToClipboard(downloadUrl)}
+                    type='button'
                     className="px-4 py-3 bg-primary hover:bg-primary-hover text-primary-foreground transition-colors"
                     title="Copy link"
                   >
@@ -193,7 +205,7 @@ function App() {
                   </button>
                 </div>
               </div>
-            
+
               {/* Expiry Info */}
               <div className="pt-4 border-t border-border">
                 <div className="flex items-center text-sm text-muted-foreground">

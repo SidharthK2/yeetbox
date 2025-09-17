@@ -70,7 +70,7 @@ const Download = () => {
           </svg>
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold text-foreground">Download Complete</h2>
+          <h2 className="text-2xl font-semibold text-foreground">Yeet!</h2>
           <p className="text-muted-foreground">Your file should have started downloading</p>
         </div>
         <a 
